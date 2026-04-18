@@ -10,7 +10,8 @@
     "format": "biome format --write"
   },
   "dependencies": {
-    "elysia": "latest"
+    "elysia": "latest",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
