@@ -13,7 +13,8 @@ const envSchema = z.object({
         .split(',')
         .map(item => item.trim())
         .filter(Boolean)
-    })
+    }),
+  DATABASE_URL: z.url()
 })
 
 export const env = envSchema.parse(process.env)
