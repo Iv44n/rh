@@ -1,4 +1,4 @@
-process.loadEnvFile()
+import 'dotenv/config'
 
 import z from 'zod'
 

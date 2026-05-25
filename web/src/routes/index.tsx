@@ -1,13 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  component: Index
+  beforeLoad: () => {
+    throw redirect({ to: '/auth/login' })
+  }
 })
-
-function Index() {
-  return (
-    <div>
-      <h1>Index</h1>
-    </div>
-  )
-}
