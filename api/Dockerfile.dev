@@ -1,0 +1,18 @@
+FROM node:24-alpine
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV NODE_ENV=development
+ENV CI=true
+
+RUN corepack enable
+
+WORKDIR /app
+
+RUN apk add --no-cache libc6-compat
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "pnpm install && pnpm run dev"]

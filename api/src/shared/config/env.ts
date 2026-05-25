@@ -14,7 +14,9 @@ const envSchema = z.object({
         .map(item => item.trim())
         .filter(Boolean)
     }),
-  DATABASE_URL: z.url()
+  DATABASE_URL: z.url(),
+  AUTH_SECRET: z.string(),
+  AUTH_URL: z.string()
 })
 
 export const env = envSchema.parse(process.env)
