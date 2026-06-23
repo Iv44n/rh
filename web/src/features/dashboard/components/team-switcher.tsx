@@ -1,5 +1,9 @@
-import { ChevronsUpDownIcon, PlusIcon } from 'lucide-react'
-import * as React from 'react'
+import { Link } from '@tanstack/react-router'
+import { CheckIcon, ChevronsUpDownIcon, Settings2Icon } from 'lucide-react'
+import { useAuth } from '#/features/auth/store/auth'
+import { OrganizationLogo } from '#/features/organization/components/organization-logo'
+import { useOrganizations } from '#/features/organization/hooks/use-organizations'
+import { useSetActiveOrganization } from '#/features/organization/hooks/use-set-active-organization'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '#/shared/components/ui/dropdown-menu.tsx'
 import {
@@ -17,20 +20,21 @@ import {
   useSidebar
 } from '#/shared/components/ui/sidebar.tsx'
 
-export function TeamSwitcher({
-  teams
-}: {
-  teams: {
-    name: string
-    logo: React.ReactNode
-    plan: string
-  }[]
-}) {
+export function TeamSwitcher() {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
-  if (!activeTeam) {
-    return null
-  }
+  const { data: organizations = [] } = useOrganizations()
+  const activeOrganizationId = useAuth(
+    state => state.auth?.session.activeOrganizationId
+  )
+  const { setActive } = useSetActiveOrganization({
+    redirectToDashboard: false
+  })
+
+  const activeOrganization =
+    organizations.find(
+      organization => organization.id === activeOrganizationId
+    ) ?? null
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -43,12 +47,28 @@ export function TeamSwitcher({
               />
             }
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              {activeTeam.logo}
-            </div>
+            <OrganizationLogo
+              organization={
+                activeOrganization ?? {
+                  id: 'none',
+                  name: 'Sin organización',
+                  slug: '',
+                  logo: null,
+                  metadata: null,
+                  createdAt: ''
+                }
+              }
+              className="size-8"
+            />
             <div className="grid flex-1 text-start text-sm leading-tight">
-              <span className="truncate font-medium">{activeTeam.name}</span>
-              <span className="truncate text-xs">{activeTeam.plan}</span>
+              <span className="truncate font-medium">
+                {activeOrganization?.name ?? 'Sin organización'}
+              </span>
+              <span className="truncate text-xs text-muted-foreground">
+                {organizations.length === 1
+                  ? '1 organización'
+                  : `${organizations.length} organizaciones`}
+              </span>
             </div>
             <ChevronsUpDownIcon className="ms-auto" />
           </DropdownMenuTrigger>
@@ -60,30 +80,42 @@ export function TeamSwitcher({
           >
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-xs text-muted-foreground">
-                Teams
+                Organizaciones
               </DropdownMenuLabel>
-              {teams.map((team, index) => (
-                <DropdownMenuItem
-                  key={team.name}
-                  onClick={() => setActiveTeam(team)}
-                  className="gap-2 p-2"
-                >
-                  <div className="flex size-6 items-center justify-center rounded-md border">
-                    {team.logo}
-                  </div>
-                  {team.name}
-                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              ))}
+              {organizations.map(organization => {
+                const isActive = organization.id === activeOrganizationId
+
+                return (
+                  <DropdownMenuItem
+                    key={organization.id}
+                    onClick={() => {
+                      if (!isActive) {
+                        setActive(organization.id)
+                      }
+                    }}
+                    className="gap-2 p-2"
+                  >
+                    <OrganizationLogo
+                      organization={organization}
+                      className="size-6 rounded-md border"
+                    />
+                    <span className="truncate">{organization.name}</span>
+                    {isActive ? <CheckIcon className="ms-auto size-4" /> : null}
+                  </DropdownMenuItem>
+                )
+              })}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="gap-2 p-2">
+              <DropdownMenuItem
+                render={<Link to="/organizations" />}
+                className="gap-2 p-2"
+              >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                  <PlusIcon className="size-4" />
+                  <Settings2Icon className="size-4" />
                 </div>
                 <div className="font-medium text-muted-foreground">
-                  Add team
+                  Gestionar organizaciones
                 </div>
               </DropdownMenuItem>
             </DropdownMenuGroup>

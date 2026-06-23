@@ -17,6 +17,7 @@ export type Session = {
   userAgent?: string
   createdAt: Date
   updatedAt: Date
+  activeOrganizationId?: string | null
 }
 
 export type SignInEmailRequest = {

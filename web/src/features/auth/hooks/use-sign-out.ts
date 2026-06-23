@@ -1,11 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { useOrganization } from '#/features/organization/store/organization'
 import { api } from '#/sdk'
 import { useAuth } from '../store/auth'
 
 export const useSignOut = () => {
   const clearAuth = useAuth(state => state.clearAuth)
+  const clearOrganizations = useOrganization(state => state.clearOrganizations)
   const queryClient = useQueryClient()
   const router = useRouter()
 
@@ -15,6 +17,7 @@ export const useSignOut = () => {
       queryClient.clear()
 
       clearAuth()
+      clearOrganizations()
 
       await router.invalidate({ sync: true })
 

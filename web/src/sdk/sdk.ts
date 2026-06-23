@@ -1,5 +1,6 @@
 import { HttpClient } from './http/http-client'
 import { authClient } from './modules/auth/client'
+import { organizationClient } from './modules/organization/client'
 
 export function createSDK() {
   const http = HttpClient.create({
@@ -10,7 +11,8 @@ export function createSDK() {
   })
 
   return {
-    auth: authClient(http)
+    auth: authClient(http),
+    organization: organizationClient(http)
   }
 }
 
