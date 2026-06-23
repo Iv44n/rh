@@ -1,3 +1,7 @@
+[build]
+  command = "vite build"
+  publish = "dist/client"
+
 [[redirects]]  
     from = "/api/*"  
     to = "https://rh-dw1z.onrender.com/api/:splat"  
