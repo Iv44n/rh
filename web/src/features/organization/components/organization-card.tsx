@@ -1,11 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import {
-  CalendarIcon,
-  EllipsisIcon,
-  LogOutIcon,
-  MailPlusIcon,
-  Trash2Icon
-} from 'lucide-react'
+import { CalendarIcon, EllipsisIcon, Trash2Icon } from 'lucide-react'
 import { type KeyboardEvent, useState } from 'react'
 import type { Organization } from '#/sdk/modules/organization/types'
 import { Button } from '#/shared/components/ui/button'
@@ -19,14 +13,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '#/shared/components/ui/dropdown-menu.tsx'
 import { cn } from '#/shared/utils/shadcn.utils'
 import { useSetActiveOrganization } from '../hooks/use-set-active-organization'
 import { DeleteOrganizationDialog } from './delete-organization-dialog'
-import { LeaveOrganizationDialog } from './leave-organization-dialog'
-import { ManageInvitationsDialog } from './manage-invitations-dialog'
 import { OrganizationLogo } from './organization-logo'
 
 const dateFormatter = new Intl.DateTimeFormat('es', {
@@ -50,8 +41,6 @@ export function OrganizationCard({
   const navigate = useNavigate()
   const { setActive, pendingOrganizationId } = useSetActiveOrganization()
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [leaveOpen, setLeaveOpen] = useState(false)
-  const [manageOpen, setManageOpen] = useState(false)
 
   const isActivating = pendingOrganizationId === organization.id
 
@@ -120,15 +109,6 @@ export function OrganizationCard({
                 align="end"
                 onClick={event => event.stopPropagation()}
               >
-                <DropdownMenuItem onClick={() => setManageOpen(true)}>
-                  <MailPlusIcon />
-                  Invitar miembros
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLeaveOpen(true)}>
-                  <LogOutIcon />
-                  Salir de la organización
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => setConfirmOpen(true)}
@@ -148,18 +128,6 @@ export function OrganizationCard({
           </span>
         </CardFooter>
       </Card>
-
-      <ManageInvitationsDialog
-        organization={organization}
-        open={manageOpen}
-        onOpenChange={setManageOpen}
-      />
-
-      <LeaveOrganizationDialog
-        organization={organization}
-        open={leaveOpen}
-        onOpenChange={setLeaveOpen}
-      />
 
       <DeleteOrganizationDialog
         organization={organization}
