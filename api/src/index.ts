@@ -22,6 +22,7 @@ app.get('/health', () => 'OK')
 
 app.listen({
   port: env.PORT,
+  env: env.ENVIRONMENT,
   openapi: openapi({
     info: {
       title: 'RH API',
