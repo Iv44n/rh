@@ -1,48 +1,38 @@
 # ========== BASE ==========
-FROM node:24-alpine AS base
-
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
-RUN corepack enable
+FROM oven/bun:1-alpine AS base
 
 WORKDIR /app
 
 # ========== DEPS ==========
 FROM base AS deps
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json bun.lock ./
 
-RUN pnpm install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 # ========== BUILDER ==========
 FROM base AS builder
 
-ENV CI=true
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN pnpm build
-
-RUN pnpm prune --prod
+RUN bun run compile
 
 # ========== RUNTIME ==========
-FROM node:24-alpine AS runner
+FROM alpine:3.22 AS runner
 
-ENV NODE_ENV=production
+RUN apk add --no-cache libstdc++ libgcc ca-certificates
+
+ENV ENVIRONMENT=production
 
 WORKDIR /app
 
-# seguridad
-RUN addgroup -S nodejs && adduser -S nestjs -G nodejs
+RUN addgroup -S app && adduser -S app -G app
 
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/arcton-app ./arcton-app
 
-USER nestjs
+USER app
 
 EXPOSE 3000
 
-CMD ["node", "dist/src/main.js"]
+CMD ["./arcton-app"]

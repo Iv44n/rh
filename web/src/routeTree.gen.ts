@@ -14,13 +14,17 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as AuthEmailVerifiedRouteImport } from './routes/auth/email-verified'
 import { Route as AcceptInvitationInvitationIdRouteImport } from './routes/accept-invitation.$invitationId'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
 import { Route as ProtectedOrganizationSettingsRouteImport } from './routes/_protected/organization/settings'
 import { Route as ProtectedOrganizationMembersRouteImport } from './routes/_protected/organization/members'
 import { Route as ProtectedOrganizationInvitationsRouteImport } from './routes/_protected/organization/invitations'
+import { Route as ProtectedOrganizationBillingRouteImport } from './routes/_protected/organization/billing'
 
 const OrganizationsRoute = OrganizationsRouteImport.update({
   id: '/organizations',
@@ -46,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -54,6 +63,16 @@ const AuthRegisterRoute = AuthRegisterRouteImport.update({
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthEmailVerifiedRoute = AuthEmailVerifiedRouteImport.update({
+  id: '/email-verified',
+  path: '/email-verified',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AcceptInvitationInvitationIdRoute =
@@ -85,6 +104,12 @@ const ProtectedOrganizationInvitationsRoute =
     path: '/organization/invitations',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
+const ProtectedOrganizationBillingRoute =
+  ProtectedOrganizationBillingRouteImport.update({
+    id: '/organization/billing',
+    path: '/organization/billing',
+    getParentRoute: () => ProtectedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -93,8 +118,12 @@ export interface FileRoutesByFullPath {
   '/organizations': typeof OrganizationsRoute
   '/dashboard': typeof ProtectedDashboardRoute
   '/accept-invitation/$invitationId': typeof AcceptInvitationInvitationIdRoute
+  '/auth/email-verified': typeof AuthEmailVerifiedRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/organization/billing': typeof ProtectedOrganizationBillingRoute
   '/organization/invitations': typeof ProtectedOrganizationInvitationsRoute
   '/organization/members': typeof ProtectedOrganizationMembersRoute
   '/organization/settings': typeof ProtectedOrganizationSettingsRoute
@@ -106,8 +135,12 @@ export interface FileRoutesByTo {
   '/organizations': typeof OrganizationsRoute
   '/dashboard': typeof ProtectedDashboardRoute
   '/accept-invitation/$invitationId': typeof AcceptInvitationInvitationIdRoute
+  '/auth/email-verified': typeof AuthEmailVerifiedRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/organization/billing': typeof ProtectedOrganizationBillingRoute
   '/organization/invitations': typeof ProtectedOrganizationInvitationsRoute
   '/organization/members': typeof ProtectedOrganizationMembersRoute
   '/organization/settings': typeof ProtectedOrganizationSettingsRoute
@@ -121,8 +154,12 @@ export interface FileRoutesById {
   '/organizations': typeof OrganizationsRoute
   '/_protected/dashboard': typeof ProtectedDashboardRoute
   '/accept-invitation/$invitationId': typeof AcceptInvitationInvitationIdRoute
+  '/auth/email-verified': typeof AuthEmailVerifiedRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/_protected/organization/billing': typeof ProtectedOrganizationBillingRoute
   '/_protected/organization/invitations': typeof ProtectedOrganizationInvitationsRoute
   '/_protected/organization/members': typeof ProtectedOrganizationMembersRoute
   '/_protected/organization/settings': typeof ProtectedOrganizationSettingsRoute
@@ -136,8 +173,12 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/dashboard'
     | '/accept-invitation/$invitationId'
+    | '/auth/email-verified'
+    | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/reset-password'
+    | '/organization/billing'
     | '/organization/invitations'
     | '/organization/members'
     | '/organization/settings'
@@ -149,8 +190,12 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/dashboard'
     | '/accept-invitation/$invitationId'
+    | '/auth/email-verified'
+    | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/reset-password'
+    | '/organization/billing'
     | '/organization/invitations'
     | '/organization/members'
     | '/organization/settings'
@@ -163,8 +208,12 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/_protected/dashboard'
     | '/accept-invitation/$invitationId'
+    | '/auth/email-verified'
+    | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/reset-password'
+    | '/_protected/organization/billing'
     | '/_protected/organization/invitations'
     | '/_protected/organization/members'
     | '/_protected/organization/settings'
@@ -216,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/auth/register': {
       id: '/auth/register'
       path: '/register'
@@ -228,6 +284,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/auth/login'
       preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/auth/email-verified': {
+      id: '/auth/email-verified'
+      path: '/email-verified'
+      fullPath: '/auth/email-verified'
+      preLoaderRoute: typeof AuthEmailVerifiedRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/accept-invitation/$invitationId': {
@@ -265,11 +335,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedOrganizationInvitationsRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
+    '/_protected/organization/billing': {
+      id: '/_protected/organization/billing'
+      path: '/organization/billing'
+      fullPath: '/organization/billing'
+      preLoaderRoute: typeof ProtectedOrganizationBillingRouteImport
+      parentRoute: typeof ProtectedRouteRoute
+    }
   }
 }
 
 interface ProtectedRouteRouteChildren {
   ProtectedDashboardRoute: typeof ProtectedDashboardRoute
+  ProtectedOrganizationBillingRoute: typeof ProtectedOrganizationBillingRoute
   ProtectedOrganizationInvitationsRoute: typeof ProtectedOrganizationInvitationsRoute
   ProtectedOrganizationMembersRoute: typeof ProtectedOrganizationMembersRoute
   ProtectedOrganizationSettingsRoute: typeof ProtectedOrganizationSettingsRoute
@@ -277,6 +355,7 @@ interface ProtectedRouteRouteChildren {
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedDashboardRoute: ProtectedDashboardRoute,
+  ProtectedOrganizationBillingRoute: ProtectedOrganizationBillingRoute,
   ProtectedOrganizationInvitationsRoute: ProtectedOrganizationInvitationsRoute,
   ProtectedOrganizationMembersRoute: ProtectedOrganizationMembersRoute,
   ProtectedOrganizationSettingsRoute: ProtectedOrganizationSettingsRoute,
@@ -287,13 +366,19 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
 )
 
 interface AuthRouteRouteChildren {
+  AuthEmailVerifiedRoute: typeof AuthEmailVerifiedRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthEmailVerifiedRoute: AuthEmailVerifiedRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

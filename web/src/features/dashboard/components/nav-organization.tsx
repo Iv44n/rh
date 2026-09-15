@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { MailIcon, SettingsIcon, UsersIcon } from 'lucide-react'
+import { CreditCardIcon, MailIcon, SettingsIcon, UsersIcon } from 'lucide-react'
 import { useAuth } from '#/features/auth/store/auth'
 import { useActiveMemberRole } from '#/features/organization/hooks/use-active-member-role'
 import { can } from '#/features/organization/utils/permissions'
@@ -42,6 +42,12 @@ export function NavOrganization() {
       to: '/organization/invitations',
       icon: <MailIcon />,
       show: can(role, 'invitation:list')
+    },
+    {
+      label: 'Facturación',
+      to: '/organization/billing',
+      icon: <CreditCardIcon />,
+      show: can(role, 'billing:manage')
     }
   ].filter(link => link.show)
 

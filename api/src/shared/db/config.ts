@@ -1,8 +1,9 @@
-import { env } from '@shared/config/env'
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
+import { SQL } from 'bun'
+import { drizzle } from 'drizzle-orm/bun-sql'
+import { env } from '#shared/config/env'
 import * as schema from './schemas'
 
-const client = new Pool({ connectionString: env.DATABASE_URL })
-
-export const db = drizzle({ client, schema })
+export const db = drizzle({
+  client: new SQL(env.DATABASE_URL),
+  relations: schema.authRelations
+})

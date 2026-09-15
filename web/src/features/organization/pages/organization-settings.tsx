@@ -1,6 +1,8 @@
+import { Link } from '@tanstack/react-router'
 import { LogOutIcon, SettingsIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '#/features/auth/store/auth'
+import { useOrganizationSubscription } from '#/features/billing/hooks/use-organization-subscription'
 import { Button } from '#/shared/components/ui/button'
 import {
   Card,
@@ -24,6 +26,8 @@ export default function OrganizationSettingsPage() {
   )
   const { data: organizations = [], isLoading } = useOrganizations()
   const { data: roleData } = useActiveMemberRole(activeOrganizationId)
+  const { subscription, isActive } =
+    useOrganizationSubscription(activeOrganizationId)
   const [leaveOpen, setLeaveOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
@@ -41,6 +45,21 @@ export default function OrganizationSettingsPage() {
   }
 
   const canDelete = can(roleData?.role, 'org:delete')
+
+  // Un plan vigente (activo) bloquea el borrado, esté o no ya cancelado: hay
+  // que esperar a que termine el período. `isRenewing`/`isCancelling` solo
+  // distinguen el texto que se muestra; el bloqueo usa `isActive`.
+  const isRenewing =
+    isActive && Boolean(subscription) && !subscription?.cancelAtPeriodEnd
+  const isCancelling =
+    isActive && Boolean(subscription) && subscription?.cancelAtPeriodEnd
+  const periodEnd = subscription?.currentPeriodEnd
+    ? new Date(subscription.currentPeriodEnd).toLocaleDateString('es', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+    : null
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -79,14 +98,38 @@ export default function OrganizationSettingsPage() {
             Salir de la organización
           </Button>
           {canDelete ? (
-            <Button
-              variant="destructive"
-              className="rounded-md"
-              onClick={() => setDeleteOpen(true)}
-            >
-              <Trash2Icon />
-              Eliminar organización
-            </Button>
+            <div className="space-y-2">
+              <Button
+                variant="destructive"
+                className="rounded-md"
+                onClick={() => setDeleteOpen(true)}
+                disabled={isActive}
+              >
+                <Trash2Icon />
+                Eliminar organización
+              </Button>
+              {isRenewing ? (
+                <p className="text-xs text-muted-foreground">
+                  Tiene una suscripción activa. Cancélala en{' '}
+                  <Link
+                    to="/organization/billing"
+                    search={{ checkout_id: undefined }}
+                    className="font-medium underline underline-offset-2"
+                  >
+                    Facturación
+                  </Link>
+                  ; podrás eliminar la organización cuando termine su vigencia.
+                </p>
+              ) : isCancelling ? (
+                <p className="text-xs text-muted-foreground">
+                  Tu suscripción ya está cancelada
+                  {periodEnd
+                    ? `, pero sigue vigente hasta el ${periodEnd}`
+                    : ''}
+                  . Podrás eliminar la organización cuando finalice.
+                </p>
+              ) : null}
+            </div>
           ) : null}
         </CardContent>
       </Card>

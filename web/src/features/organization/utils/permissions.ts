@@ -17,6 +17,7 @@ export type OrgAction =
   | 'invitation:create'
   | 'invitation:cancel'
   | 'invitation:list'
+  | 'billing:manage'
 
 type BaseRole = 'owner' | 'admin' | 'member'
 
@@ -31,7 +32,8 @@ const ROLE_PERMISSIONS: Record<BaseRole, ReadonlySet<OrgAction>> = {
     'member:transfer',
     'invitation:create',
     'invitation:cancel',
-    'invitation:list'
+    'invitation:list',
+    'billing:manage'
   ]),
   admin: new Set<OrgAction>([
     'org:update',
@@ -41,7 +43,8 @@ const ROLE_PERMISSIONS: Record<BaseRole, ReadonlySet<OrgAction>> = {
     'member:list',
     'invitation:create',
     'invitation:cancel',
-    'invitation:list'
+    'invitation:list',
+    'billing:manage'
   ]),
   member: new Set<OrgAction>(['org:leave', 'member:list'])
 }

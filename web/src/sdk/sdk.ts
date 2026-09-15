@@ -1,5 +1,6 @@
 import { HttpClient } from './http/http-client'
 import { authClient } from './modules/auth/client'
+import { billingClient } from './modules/billing/client'
 import { organizationClient } from './modules/organization/client'
 
 export function createSDK() {
@@ -12,7 +13,8 @@ export function createSDK() {
 
   return {
     auth: authClient(http),
-    organization: organizationClient(http)
+    organization: organizationClient(http),
+    billing: billingClient(http)
   }
 }
 

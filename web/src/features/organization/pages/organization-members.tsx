@@ -1,6 +1,7 @@
 import {
   CrownIcon,
   Loader2Icon,
+  LogOutIcon,
   ShieldIcon,
   Trash2Icon,
   UserIcon,
@@ -31,9 +32,11 @@ import {
 import { Skeleton } from '#/shared/components/ui/skeleton'
 import { cn } from '#/shared/utils/shadcn.utils'
 import { InviteMemberForm } from '../components/invite-member-form'
+import { LeaveOrganizationDialog } from '../components/leave-organization-dialog'
 import { OrgPageHeader } from '../components/org-page-header'
 import { useActiveMemberRole } from '../hooks/use-active-member-role'
 import { useMembers } from '../hooks/use-members'
+import { useOrganizations } from '../hooks/use-organizations'
 import { useRemoveMember } from '../hooks/use-remove-member'
 import { useTransferOwnership } from '../hooks/use-transfer-ownership'
 import { can, isOwner } from '../utils/permissions'
@@ -279,7 +282,12 @@ export default function OrganizationMembersPage() {
   const { data, isLoading, isError } = useMembers(
     activeOrganizationId ?? undefined
   )
+  const { data: organizations = [] } = useOrganizations()
+  const organization = organizations.find(
+    item => item.id === activeOrganizationId
+  )
   const [inviteOpen, setInviteOpen] = useState(false)
+  const [leaveOpen, setLeaveOpen] = useState(false)
 
   const currentRole = roleData?.role
   const members = data?.members ?? []
@@ -340,6 +348,25 @@ export default function OrganizationMembersPage() {
         )}
       </Card>
 
+      {organization ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3">
+          <div>
+            <p className="text-sm font-medium">Salir de la organización</p>
+            <p className="text-xs text-muted-foreground">
+              Dejarás de ser miembro y perderás el acceso a su contenido.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            className="rounded-md"
+            onClick={() => setLeaveOpen(true)}
+          >
+            <LogOutIcon />
+            Salir
+          </Button>
+        </div>
+      ) : null}
+
       <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -354,6 +381,14 @@ export default function OrganizationMembersPage() {
           ) : null}
         </DialogContent>
       </Dialog>
+
+      {organization ? (
+        <LeaveOrganizationDialog
+          organization={organization}
+          open={leaveOpen}
+          onOpenChange={setLeaveOpen}
+        />
+      ) : null}
     </div>
   )
 }

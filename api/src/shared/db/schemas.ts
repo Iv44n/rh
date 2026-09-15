@@ -1,1 +1,1 @@
-export * from '@modules/auth/schemas'
+export * from '../../modules/auth/auth.schemas'

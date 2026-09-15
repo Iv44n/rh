@@ -29,6 +29,8 @@ export type SignUpEmailRequest = {
   name: string
   email: string
   password: string
+  /** URL a la que redirigir tras verificar el correo desde el enlace. */
+  callbackURL?: string
 }
 
 export type AuthResponse = {
@@ -36,4 +38,24 @@ export type AuthResponse = {
   token?: string | null
   url?: string | null
   user: User
+}
+
+export type RequestPasswordResetRequest = {
+  email: string
+  /** URL del frontend donde el usuario elegirá la nueva contraseña. */
+  redirectTo: string
+}
+
+export type ResetPasswordRequest = {
+  token: string
+  newPassword: string
+}
+
+export type SendVerificationEmailRequest = {
+  email: string
+  callbackURL?: string
+}
+
+export type StatusResponse = {
+  status: boolean
 }

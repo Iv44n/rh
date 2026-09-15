@@ -1,25 +1,37 @@
 import { useMutation } from '@tanstack/react-query'
-import { useRouter } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { useOrganization } from '#/features/organization/store/organization'
 import { api } from '#/sdk'
-import { useAuth } from '../store/auth'
 
+type SignUpInput = { name: string; email: string; password: string }
+
+/**
+ * Registra una cuenta. Como el login exige email verificado, el registro NO
+ * inicia sesión: se envía el correo de verificación y se redirige al login con
+ * un aviso. El `callbackURL` define a dónde vuelve el usuario tras verificar.
+ */
 export const useSignUpEmail = () => {
-  const refreshAuth = useAuth(state => state.refreshAuth)
   const clearOrganizations = useOrganization(state => state.clearOrganizations)
-  const router = useRouter()
+  const navigate = useNavigate()
 
   const mutation = useMutation({
-    mutationFn: api.auth.signUp.email,
+    mutationFn: (input: SignUpInput) =>
+      api.auth.signUp.email({
+        name: input.name,
+        email: input.email,
+        password: input.password,
+        callbackURL: `${window.location.origin}/auth/email-verified`
+      }),
     onSuccess: async () => {
       clearOrganizations()
-      await refreshAuth()
-      await router.invalidate({ sync: true })
 
-      toast.success('Cuenta creada exitosamente', {
-        description: 'Se creó la cuenta exitosamente'
+      toast.success('Cuenta creada', {
+        description:
+          'Te enviamos un correo para verificar tu cuenta. Verifícala para poder iniciar sesión.'
       })
+
+      await navigate({ to: '/auth/login', replace: true })
     },
     onError: (err: Error) => {
       toast.error('Error al registrar cuenta', {
